@@ -38,38 +38,40 @@ void* alloc(std::size_t chunk_size) {
 
     // add the new memory allocation to the occupied list
     memory_chunk new_chunk{ partition_size, new_space };
-    occupiedChunks.push_front(new_chunk);
+    occupied_chunks.push_front(new_chunk);
     return new_space;
 }
 
 // DEALLOC function
-void dealloc(void* chunk_space) {
-    auto prev_it = occupiedChunks.before_begin();
+void dealloc(void* ptr) {
+    auto previous = occupied_chunks.before_begin();
 
-    // iterate to find chunk_space
-    for (auto it = occupiedChunks.begin(); it != occupiedChunks.end(); prev_it = it, ++it) {
-        if (it->space == chunk_space) {
-            // move chunk to free
-            freeChunks.push_front(*it);
-            // erase from occupied
-            occupiedChunks.erase_after(prev_it); 
+    // Search for the pointer in the occupiedChunks list.
+    // deallocs most recenetly allocated chunk
+    for (auto it = occupied_chunks.begin(); it != occupied_chunks.end(); previous = it, ++it) {
+        if (it->space == ptr) {
+            // move the chunk from occupied to free
+            free_chunks.push_front(*it);
+            occupied_chunks.erase_after(previous);
             return;
         }
     }
-    // abort if not found
-    abort(); 
+
+    // If we reach here, the given pointer was not found in the occupiedChunks list.
+    std::cout << "Fatal Error: Attempting to free memory that was never allocated." << std::endl;
+    std::abort();  // Terminate the program.
 }
 
 // FIRST FIT function
 memory_chunk* first_fit_allocation(std::size_t partition_size) {
-    auto previous = freeChunks.before_begin();
+    auto previous = free_chunks.before_begin();
 
     // iterate through chunks
-    for (auto it = freeChunks.begin(); it != freeChunks.end(); previous = it, ++it) {
+    for (auto it = free_chunks.begin(); it != free_chunks.end(); previous = it, ++it) {
         if (it->size >= partition_size) {
             // move chunk
-            occupiedChunks.push_front(*it);
-            freeChunks.erase_after(previous); 
+            occupied_chunks.push_front(*it);
+            free_chunks.erase_after(previous); 
             return &*it;
         }
     }
@@ -79,24 +81,24 @@ memory_chunk* first_fit_allocation(std::size_t partition_size) {
 // BEST FIT function
 memory_chunk* best_fit_allocation(std::size_t partition_size) {
     // pointers
-    auto best_fit = freeChunks.end();
-    auto best_fit_prev = freeChunks.before_begin();
-    auto previous = freeChunks.before_begin();
+    auto best_fit = free_chunks.end();
+    auto best_fit_prev = free_chunks.before_begin();
+    auto previous = free_chunks.before_begin();
 
     // iterate through chunks
-    for (auto it = freeChunks.begin(); it != freeChunks.end(); previous = it, ++it) {
+    for (auto it = free_chunks.begin(); it != free_chunks.end(); previous = it, ++it) {
         if (it->size >= partition_size && 
-            (best_fit == freeChunks.end() || it->size < best_fit->size)) {
+            (best_fit == free_chunks.end() || it->size < best_fit->size)) {
             best_fit = it;
             best_fit_prev = previous;
         }
     }
 
-    if (best_fit != freeChunks.end()) {
+    if (best_fit != free_chunks.end()) {
         // move chunk
-        occupiedChunks.push_front(*best_fit);
+        occupied_chunks.push_front(*best_fit);
         // remove from free
-        freeChunks.erase_after(best_fit_prev); 
+        free_chunks.erase_after(best_fit_prev); 
         return &*best_fit; 
     }
     return nullptr;

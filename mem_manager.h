@@ -1,9 +1,9 @@
 #ifndef MEM_MANAGER_H
 #define MEM_MANAGER_H
 
+#include <iostream>
 #include <forward_list>
 #include <unistd.h>
-
 
 struct memory_chunk
 {
@@ -16,8 +16,9 @@ enum class Allocation_Strategy{
     BEST_FIT
 };
 
-std::forward_list<memory_chunk> occupiedChunks;
-std::forward_list<memory_chunk> freeChunks;
+Allocation_Strategy current_strategy;
+std::forward_list<memory_chunk> occupied_chunks;
+std::forward_list<memory_chunk> free_chunks;
 
 // return size closest to 32,64,128,256,512
 std::size_t determine_partition_size(std::size_t chunk_size);
