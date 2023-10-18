@@ -2,6 +2,8 @@
 
 //FIRST FIT or BEST FIT
 Allocation_Strategy current_strategy; 
+std::forward_list<memory_chunk> occupied_chunks;
+std::forward_list<memory_chunk> free_chunks;
 
 std::size_t determine_partition_size(std::size_t chunk_size){
 

@@ -17,8 +17,8 @@ enum class Allocation_Strategy{
 };
 
 extern Allocation_Strategy current_strategy;
-std::forward_list<memory_chunk> occupied_chunks;
-std::forward_list<memory_chunk> free_chunks;
+extern std::forward_list<memory_chunk> occupied_chunks;
+extern std::forward_list<memory_chunk> free_chunks;
 
 // return size closest to 32,64,128,256,512
 std::size_t determine_partition_size(std::size_t chunk_size);
