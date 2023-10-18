@@ -2,6 +2,8 @@
 #define ALLOCATOR_H
 
 #include <forward_list>
+#include <unistd.h>
+
 
 struct memory_chunk
 {
