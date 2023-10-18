@@ -17,7 +17,7 @@ void* alloc(std::size_t chunk_size) {
 
         case Allocation_Strategy::BEST_FIT:
             allocated_chunk = best_fit_allocation(partition_size);
-            break
+            break;
     }
 
     // return if chunk allocated
