@@ -1,7 +1,22 @@
 #include "mem_manager.h"
 
 //FIRST FIT or BEST FIT
-Allocation_Strategy currentStrategy; 
+Allocation_Strategy current_strategy; 
+
+std::forward_list<memory_chunk> occupied_chunks;
+std::forward_list<memory_chunk> free_chunks;
+
+
+std::size_t determine_partition_size(std::size_t chunk_size){
+
+    if (chunk_size <= 32) {return 32;}
+    if (chunk_size <= 64) {return 64;}
+    if (chunk_size <= 128) {return 128;}
+    if (chunk_size <= 256) {return 256;}
+    if (chunk_size <= 512) {return 512;}
+
+    return 512;
+}
 
 // main function for ALLOC
 void* alloc(std::size_t chunk_size) {
@@ -10,7 +25,7 @@ void* alloc(std::size_t chunk_size) {
     memory_chunk* allocated_chunk = nullptr;
 
     // switch case
-    switch (currentStrategy) {
+    switch (current_strategy) {
         case Allocation_Strategy::FIRST_FIT:
             allocated_chunk = first_fit_allocation(partition_size);
             break;

@@ -16,7 +16,7 @@ enum class Allocation_Strategy{
     BEST_FIT
 };
 
-Allocation_Strategy current_strategy;
+extern Allocation_Strategy current_strategy;
 std::forward_list<memory_chunk> occupied_chunks;
 std::forward_list<memory_chunk> free_chunks;
 
