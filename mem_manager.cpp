@@ -13,20 +13,17 @@ void* alloc(std::size_t chunk_size) {
     switch (currentStrategy) {
         case Allocation_Strategy::FIRST_FIT:
             allocated_chunk = first_fit_allocation(partition_size);
-
-            // return if chunk allocated
-            if (allocated_chunk) {
-                return allocated_chunk->space;
-            }
+            break;
 
         case Allocation_Strategy::BEST_FIT:
             allocated_chunk = best_fit_allocation(partition_size);
-
-            // return if chunk allocated
-            if (allocated_chunk) {
-                 return allocated_chunk->space;
-            }
+            break
     }
+
+    // return if chunk allocated
+    if (allocated_chunk) {
+        return allocated_chunk->space;
+        }
 
     // if no chunk found, make new and allocate
     void* new_space = sbrk(partition_size);
@@ -102,3 +99,4 @@ memory_chunk* best_fit_allocation(std::size_t partition_size) {
         return &*best_fit; 
     }
     return nullptr;
+}
