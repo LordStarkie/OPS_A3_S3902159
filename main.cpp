@@ -2,9 +2,12 @@
 #include <fstream>
 #include <stack>
 #include <string>
+#include <chrono>
+
 
 #include "mem_manager.h"
 #include "experiment_helper.h"
+
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -31,6 +34,9 @@ int main(int argc, char* argv[]) {
     }
 
     std::stack<void*> allocated_pointers;
+    
+    // START TIME
+    auto start_time = std::chrono::high_resolution_clock::now();
 
     // allocating and deallocating by line
     std::string line;
@@ -52,6 +58,10 @@ int main(int argc, char* argv[]) {
             }
         }
     }
+
+    // END TIME
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> elapsed_time = end_time - start_time;
 
     file.close();
 
@@ -76,6 +86,10 @@ int main(int argc, char* argv[]) {
     std::cout << "\nFragmentation Data:" << std::endl;
     std::cout << "Internal Fragmentation: " << internal_frag << " bytes (" << frag_percentages.first << "%)\n";
     std::cout << "External Fragmentation: " << external_frag << " bytes (" << frag_percentages.second << "%)\n";
+
+    // print time 
+    std::cout << "\nTime:" << program << ": " << elapsed_time.count() << "ms\n";
+
 
     // exit_success
     return 0;  
