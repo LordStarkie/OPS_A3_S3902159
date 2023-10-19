@@ -60,27 +60,31 @@ void dealloc(void* ptr) {
     std::cout << "dealloc" << std::endl;
 
     if (occupied_chunks.empty()) {
-        std::cout << "Fatal Error: Attempting to free memory with no occupied chunks." << std::endl;
-        std::abort();  // Terminate the program.
-    }
-
-    auto first_chunk = occupied_chunks.begin();
-    if (first_chunk->space == ptr) {
-        if ((char*)ptr + first_chunk->size == (char*)sbrk(0)) {
-            // adjust the program's break value to release memory.
-            brk(ptr);
-        } else {
-            // move it to the free list.
-            free_chunks.push_front(*first_chunk);
-        }
-        // remove chunk from the occupied list.
-        occupied_chunks.pop_front();
-    } else {
-        std::cout << "error: freeing memory." << std::endl;
+        std::cout << "error: attempting to free memory with no occupied chunks." << std::endl;
         // terminate
         std::abort(); 
     }
+
+    auto prev_it = occupied_chunks.before_begin();
+    for (auto it = occupied_chunks.begin(); it != occupied_chunks.end(); ++prev_it, ++it) {
+        if (it->space == ptr) {
+            if ((char*)ptr + it->size == (char*)sbrk(0)) {
+                // adjust the program's break value to release memory.
+                brk(ptr);
+            } else {
+                // move it to the free list.
+                free_chunks.push_front(*it);
+            }
+            // remove chunk from the occupied list.
+            occupied_chunks.erase_after(prev_it);
+            return;
+        }
+    }
+
+    std::cout << "error: freeing memory." << std::endl;
+    std::abort();
 }
+
 
 
 
