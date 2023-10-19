@@ -59,43 +59,31 @@ void* alloc(std::size_t chunk_size) {
 void dealloc(void* ptr) {
     std::cout << "dealloc" << std::endl;
 
-    if (occupied_chunks.empty()) {
-        std::cout << "Fatal Error: Attempting to free memory with no occupied chunks." << std::endl;
-        std::abort();  // Terminate the program.
-    }
-
-    if (occupied_chunks.front().space == ptr) {
-        if ((char*)ptr + occupied_chunks.front().size == (char*)sbrk(0)) {
-            brk(ptr);
-        } else {
-            free_chunks.push_front(occupied_chunks.front());
-        }
-        occupied_chunks.pop_front();
-        return;
-    }
-
     auto previous_chunk = occupied_chunks.before_begin();
 
-    for (auto it = occupied_chunks.begin(); it != occupied_chunks.end(); ++it) {
+    // iterate through occupied chunks to find the pointer
+    for (auto it = occupied_chunks.begin(); it != occupied_chunks.end(); previous_chunk = it, ++it) {
         if (it->space == ptr) {
-            if ((char*)ptr + it->size == (char*)sbrk(0)) {
+
+            // Check if the chunk is the latest one allocated (i.e., contiguous with the program's break)
+            if ((char*)it->space + it->size == (char*)sbrk(0)) {
+                // Adjust the program's break value to release memory. This shrinks the program's memory.
                 brk(ptr);
             } else {
+                // Move it to the free list.
                 free_chunks.push_front(*it);
             }
+
+            // Remove chunk from the occupied list.
             occupied_chunks.erase_after(previous_chunk);
-            return; 
+            return;
         }
-        previous_chunk = it;
     }
 
-    // If the loop completes and we haven't returned, then the pointer wasn't found.
-    std::cout << "error: freeing memory not found in occupied chunks." << std::endl;
-    std::abort(); 
+    // If we've reached here, the pointer was not found in the occupied_chunks.
+    std::cerr << "Fatal Error: Attempting to free memory that was never allocated." << std::endl;
+    std::abort();  // Terminate the program.
 }
-
-
-
 
 
 
