@@ -59,33 +59,22 @@ void* alloc(std::size_t chunk_size) {
 void dealloc(void* ptr) {
     std::cout << "dealloc" << std::endl;
 
-    auto previous_chunk = occupied_chunks.before_begin();
-
-    // iterate through occupied chunks to find the pointer
-    for (auto it = occupied_chunks.begin(); it != occupied_chunks.end(); previous_chunk = it, ++it) {
+    for (auto it = occupied_chunks.begin(), prev = occupied_chunks.before_begin(); it != occupied_chunks.end(); ++prev = it, ++it) {
         if (it->space == ptr) {
-
-            // Check if the chunk is the latest one allocated (i.e., contiguous with the program's break)
-            if ((char*)it->space + it->size == (char*)sbrk(0)) {
-                // Adjust the program's break value to release memory. This shrinks the program's memory.
-                std::cout << "brk()" << std::endl;
-                brk(ptr);
-            } else {
-                // Move it to the free list.
-                memory_chunk freed_chunk = *it; // Create a copy of the chunk
-                free_chunks.push_front(freed_chunk);
-            }
-
-            // Remove chunk from the occupied list.
-            occupied_chunks.erase_after(previous_chunk);
-            return;
+            // move the chunk to the free list.
+            free_chunks.push_front(*it);
+            
+            // remove the chunk from the occupied list.
+            occupied_chunks.erase_after(prev);
+            return;  
         }
     }
 
-    // If we've reached here, the pointer was not found in the occupied_chunks.
-    std::cerr << "Fatal Error: Attempting to free memory that was never allocated." << std::endl;
-    std::abort();  // Terminate the program.
+    //abort
+    std::cout << "error: freeing memory that was never allocated." << std::endl;
+    std::abort(); 
 }
+
 
 
 
