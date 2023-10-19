@@ -50,7 +50,7 @@ void* alloc(std::size_t chunk_size) {
     }
 
     // add the new memory allocation to the occupied list
-    memory_chunk new_chunk{ partition_size, new_space };
+    memory_chunk new_chunk{ partition_size,chunk_size, new_space};
     occupied_chunks.push_front(new_chunk);
     return new_space;
 }
@@ -74,7 +74,6 @@ void dealloc(void* ptr) {
     std::cout << "error: freeing memory that was never allocated." << std::endl;
     std::abort(); 
 }
-
 
 
 

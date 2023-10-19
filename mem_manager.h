@@ -10,6 +10,7 @@
 struct memory_chunk
 {
     std::size_t size;
+    std::size_t used_size;
     void *space;
 };
 

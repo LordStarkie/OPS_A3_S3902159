@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
     
     std::cout << "\nFree List:" << std::endl;
     for (const auto& chunk : free_chunks) {
-        std::cout << "Address: " << chunk.space << ", Total Size: " << chunk.size << std::endl;
+        std::cout << "Address: " << chunk.space << ", Total Size: " << chunk.size << ", Used Size: " << chunk.used_size<< std::endl;
     }
 
     // exit_success
