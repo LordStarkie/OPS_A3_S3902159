@@ -4,6 +4,7 @@
 #include <string>
 
 #include "mem_manager.h"
+#include "experiment_helper.h"
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
