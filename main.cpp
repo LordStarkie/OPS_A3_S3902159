@@ -67,6 +67,16 @@ int main(int argc, char* argv[]) {
         std::cout << "Address: " << chunk.space << ", Total Size: " << chunk.size << ", Used Size: " << chunk.used_size<< std::endl;
     }
 
+    // calculate fragmentation
+    double internal_frag = calculate_internal_fragmentation(occupied_chunks);
+    double external_frag = calculate_external_fragmentation(free_chunks);
+    auto frag_percentages = calculate_fragmentation_percentages(occupied_chunks, free_chunks);
+
+    // print fragmentation data
+    std::cout << "\nFragmentation Data:" << std::endl;
+    std::cout << "Internal Fragmentation: " << internal_frag << " bytes (" << frag_percentages.first << "%)\n";
+    std::cout << "External Fragmentation: " << external_frag << " bytes (" << frag_percentages.second << "%)\n";
+
     // exit_success
     return 0;  
 }
