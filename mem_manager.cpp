@@ -60,23 +60,31 @@ void dealloc(void* ptr) {
     std::cout << "dealloc" << std::endl;
 
     if (occupied_chunks.empty()) {
-        std::cout << "error: attempting to free memory with no occupied chunks." << std::endl;
-        std::abort(); 
+        std::cout << "Fatal Error: Attempting to free memory with no occupied chunks." << std::endl;
+        std::abort();  // Terminate the program.
+    }
+
+    if (occupied_chunks.front().space == ptr) {
+        if ((char*)ptr + occupied_chunks.front().size == (char*)sbrk(0)) {
+            brk(ptr);
+        } else {
+            free_chunks.push_front(occupied_chunks.front());
+        }
+        occupied_chunks.pop_front();
+        return;
+    }
 
     auto previous_chunk = occupied_chunks.before_begin();
 
     for (auto it = occupied_chunks.begin(); it != occupied_chunks.end(); ++it) {
         if (it->space == ptr) {
             if ((char*)ptr + it->size == (char*)sbrk(0)) {
-                // adjust the program's break value to release memory.
                 brk(ptr);
             } else {
-                // move it to the free list.
                 free_chunks.push_front(*it);
             }
-            // remove chunk from the occupied list.
             occupied_chunks.erase_after(previous_chunk);
-            return;  // Important to exit after deallocating to prevent multiple deletions.
+            return; 
         }
         previous_chunk = it;
     }
@@ -84,8 +92,8 @@ void dealloc(void* ptr) {
     // If the loop completes and we haven't returned, then the pointer wasn't found.
     std::cout << "error: freeing memory not found in occupied chunks." << std::endl;
     std::abort(); 
-    }
 }
+
 
 
 
