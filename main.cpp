@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
     std::cout << "" << std::endl;
     std::cout << "Allocated List:" << std::endl;
     for (const auto& chunk : occupied_chunks) {
-        std::cout << "Address: " << chunk.space << ", Total Size: " << chunk.size << std::endl;  
+        std::cout << "Address: " << chunk.space << ", Total Size: " << chunk.size << ", Used Size: " << chunk.used_size << std::endl;  
     }
     
     std::cout << "\nFree List:" << std::endl;
