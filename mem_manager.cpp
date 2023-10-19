@@ -71,7 +71,8 @@ void dealloc(void* ptr) {
                 brk(ptr);
             } else {
                 // Move it to the free list.
-                free_chunks.push_front(*it);
+                memory_chunk freed_chunk = *it; // Create a copy of the chunk
+                free_chunks.push_front(freed_chunk);
             }
 
             // Remove chunk from the occupied list.
