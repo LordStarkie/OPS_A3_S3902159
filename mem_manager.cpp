@@ -68,6 +68,7 @@ void dealloc(void* ptr) {
             // Check if the chunk is the latest one allocated (i.e., contiguous with the program's break)
             if ((char*)it->space + it->size == (char*)sbrk(0)) {
                 // Adjust the program's break value to release memory. This shrinks the program's memory.
+                std::cout << "brk()" << std::endl;
                 brk(ptr);
             } else {
                 // Move it to the free list.
