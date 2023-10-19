@@ -8,7 +8,7 @@ CFLAGS = -Wall -Wextra -std=c++17
 TARGETS = firstfit bestfit
 
 # Source files
-SOURCES = mem_manager.cpp main.cpp
+SOURCES = mem_manager.cpp main.cpp experiment_helper.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 
 all: $(TARGETS)
