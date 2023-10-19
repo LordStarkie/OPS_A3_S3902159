@@ -18,6 +18,9 @@ std::size_t determine_partition_size(std::size_t chunk_size){
 
 // main function for ALLOC
 void* alloc(std::size_t chunk_size) {
+    std::cout << "alloc" << chunk_size << std::endl;
+
+    
     // get closest chunk size
     std::size_t partition_size = determine_partition_size(chunk_size);
     memory_chunk* allocated_chunk = nullptr;
@@ -54,6 +57,7 @@ void* alloc(std::size_t chunk_size) {
 
 // DEALLOC function
 void dealloc(void* ptr) {
+    std::cout << "dealloc" << std::endl;
     auto previous = occupied_chunks.before_begin();
 
     // Search for the pointer in the occupiedChunks list.
