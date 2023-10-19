@@ -18,7 +18,7 @@ std::size_t determine_partition_size(std::size_t chunk_size){
 
 // main function for ALLOC
 void* alloc(std::size_t chunk_size) {
-    std::cout << "alloc" << chunk_size << std::endl;
+    //std::cout << "alloc: " << chunk_size << std::endl;
 
     
     // get closest chunk size
@@ -55,17 +55,27 @@ void* alloc(std::size_t chunk_size) {
     return new_space;
 }
 
-// DEALLOC function
 void dealloc(void* ptr) {
-    std::cout << "dealloc" << std::endl;
+    //std::cout << "dealloc" << std::endl;
     auto previous = occupied_chunks.before_begin();
 
+    // pointer allocated block
+    auto last_allocated = occupied_chunks.begin();
+
     // Search for the pointer in the occupiedChunks list.
-    // deallocs most recenetly allocated chunk
     for (auto it = occupied_chunks.begin(); it != occupied_chunks.end(); previous = it, ++it) {
         if (it->space == ptr) {
-            // move the chunk from occupied to free
-            free_chunks.push_front(*it);
+            if (it == last_allocated) {
+                // Update the program's break to release the memory block
+                if (brk(it->space) != 0) {
+                    std::cerr << "Error: Failed to adjust the program's break using brk()." << std::endl;
+                    // abort
+                    std::abort();  
+                }
+            } else {
+                // move chunk 
+                free_chunks.push_front(*it);
+            }
             occupied_chunks.erase_after(previous);
             return;
         }
@@ -75,6 +85,9 @@ void dealloc(void* ptr) {
     std::cout << "Fatal Error: Attempting to free memory that was never allocated." << std::endl;
     std::abort();  // Terminate the program.
 }
+
+
+
 
 // FIRST FIT function
 memory_chunk* first_fit_allocation(std::size_t partition_size) {

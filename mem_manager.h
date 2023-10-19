@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <forward_list>
+#include <cstdint> 
+
 #include <unistd.h>
 
 struct memory_chunk

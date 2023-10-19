@@ -55,10 +55,12 @@ int main(int argc, char* argv[]) {
     file.close();
 
     // print allocs and deallocs
+    std::cout << "" << std::endl;
     std::cout << "Allocated List:" << std::endl;
     for (const auto& chunk : occupied_chunks) {
         std::cout << "Address: " << chunk.space << ", Total Size: " << chunk.size << std::endl;  
-
+    }
+    
     std::cout << "\nFree List:" << std::endl;
     for (const auto& chunk : free_chunks) {
         std::cout << "Address: " << chunk.space << ", Total Size: " << chunk.size << std::endl;
@@ -66,5 +68,5 @@ int main(int argc, char* argv[]) {
 
     // exit_success
     return 0;  
-    }
 }
+
