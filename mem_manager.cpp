@@ -18,7 +18,7 @@ std::size_t determine_partition_size(std::size_t chunk_size){
 
 // main function for ALLOC
 void* alloc(std::size_t chunk_size) {
-    //std::cout << "alloc: " << chunk_size << std::endl;
+    std::cout << "alloc: " << chunk_size << std::endl;
 
     
     // get closest chunk size
@@ -57,7 +57,7 @@ void* alloc(std::size_t chunk_size) {
 
 // DEALLOC
 void dealloc(void* ptr) {
-    //std::cout << "dealloc" << std::endl;
+    std::cout << "dealloc" << std::endl;
 
     if (occupied_chunks.empty()) {
         std::cout << "Fatal Error: Attempting to free memory with no occupied chunks." << std::endl;
