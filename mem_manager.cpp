@@ -57,7 +57,7 @@ void* alloc(std::size_t chunk_size) {
 
 // DEALLOC
 void dealloc(void* ptr) {
-    std::cout << "dealloc" << std::endl;
+    //std::cout << "dealloc" << std::endl;
 
     if (occupied_chunks.empty()) {
         std::cout << "Fatal Error: Attempting to free memory with no occupied chunks." << std::endl;
